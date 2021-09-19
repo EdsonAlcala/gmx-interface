@@ -34,7 +34,7 @@
   force = false
 
 [[redirects]]
-  from = "/"
+  from = "/*"
   to = "https://gmx.io"
   status = 301
   force = false
