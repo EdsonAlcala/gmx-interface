@@ -4,6 +4,31 @@
   base = "."
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/trade"
+  to = "https://gmx.io/trade"
+  status = 200
+
+[[redirects]]
+  from = "/earn"
+  to = "https://gmx.io/earn"
+  status = 200
+
+[[redirects]]
+  from = "/dashboard"
+  to = "https://gmx.io/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/buy_glp"
+  to = "https://gmx.io/buy_glp"
+  status = 200
+
+[[redirects]]
+  from = "/sell_glp"
+  to = "https://gmx.io/sell_glp"
+  status = 200
+
+[[redirects]]
+  from = "/"
+  to = "https://gmx.io"
   status = 200
