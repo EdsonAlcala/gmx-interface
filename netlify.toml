@@ -7,34 +7,34 @@
   from = "/trade"
   to = "https://gmx.io/trade"
   status = 301
-  force = false
+  force = true
 
 [[redirects]]
   from = "/earn"
   to = "https://gmx.io/earn"
   status = 301
-  force = false
+  force = true
 
 [[redirects]]
   from = "/dashboard"
   to = "https://gmx.io/dashboard"
   status = 301
-  force = false
+  force = true
 
 [[redirects]]
   from = "/buy_glp"
   to = "https://gmx.io/buy_glp"
   status = 301
-  force = false
+  force = true
 
 [[redirects]]
   from = "/sell_glp"
   to = "https://gmx.io/sell_glp"
   status = 301
-  force = false
+  force = true
 
 [[redirects]]
   from = "/*"
   to = "https://gmx.io"
   status = 301
-  force = false
+  force = true
