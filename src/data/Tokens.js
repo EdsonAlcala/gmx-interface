@@ -179,10 +179,31 @@ const TOKENS = {
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
     },
     {
+      name: "Chainlink",
+      symbol: "LINK",
+      decimals: 18,
+      address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+      isStable: false
+    },
+    {
+      name: "Uniswap",
+      symbol: "UNI",
+      decimals: 18,
+      address: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+      isStable: false
+    },
+    {
       name: "USD Coin",
       symbol: "USDC",
       decimals: 6,
       address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      isStable: true
+    },
+    {
+      name: "Tether",
+      symbol: "USDT",
+      decimals: 6,
+      address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
       isStable: true
     }
   ]
