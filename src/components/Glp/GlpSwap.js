@@ -635,12 +635,12 @@ export default function GlpSwap(props) {
               </div>
               <div className="align-right">
                 {isBuying && <Tooltip handle={feePercentageText} position="right-bottom">
-                  To reduce fees, select a different asset to pay with. <br/>
-                  Check the "Save on Fees" section below for fee percentages.
+                  {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to pay with.</div>}
+                  Check the "Save on Fees" section below to get the lowest fee percentages.
                 </Tooltip>}
                 {!isBuying && <Tooltip handle={feePercentageText} position="right-bottom">
-                  To reduce fees, select a different asset to receive. <br/>
-                  Check the "Save on Fees" section below for fee percentages.
+                  {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to receive.</div>}
+                  Check the "Save on Fees" section below to get the lowest fee percentages.
                 </Tooltip>}
               </div>
             </div>

@@ -465,10 +465,10 @@ export default function PositionSeller(props) {
     <div className="PositionEditor">
       {(position) &&
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-          {(profitPrice && nextHasProfit && nextDeltaPercentage.eq(0)) &&
+          {(profitPrice && position.delta.eq(0) && position.pendingDelta.gt(0)) &&
             <div className="Confirmation-box-warning">
               WARNING: You {orderType === MARKET ? 'have' : 'will have'} a&nbsp;
-              <a href="https://gambit.gitbook.io/gambit/trading" target="_blank" rel="noopener noreferrer">
+              <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
                 pending profit
               </a> of {deltaStr}. <br/>
               Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
