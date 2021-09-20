@@ -131,7 +131,7 @@ export function useTrades(chainId, account) {
 }
 
 export function useChartPrices(marketName, chainId) {
-  const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName], {
+  const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName, chainId], {
     fetcher: async () => {
       try {
         return await getChartPricesFromStats(marketName, chainId)
@@ -147,6 +147,7 @@ export function useChartPrices(marketName, chainId) {
         }
       }
     },
+    dedupingInterval: 60000,
     focusThrottleInterval: 60000 * 10
   })
   return [prices, updatePrices];
