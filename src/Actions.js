@@ -82,7 +82,7 @@ export default function Actions() {
         {(pnlData && pnlData.length > 0) && pnlData.map((pnlRow, index) => {
           const token = getToken(chainId, pnlRow.data.indexToken)
           return (
-            <div className="TradeHistory-row border" key={index}>
+            <div className="TradeHistory-row App-box App-box-border" key={index}>
               <div>{token.symbol} {pnlRow.data.isLong ? "Long" : "Short"} Profit: {formatAmount(pnlRow.data.profit, USD_DECIMALS, 2, true)} USD</div>
               <div>{token.symbol} {pnlRow.data.isLong ? "Long" : "Short"} Loss: {formatAmount(pnlRow.data.loss, USD_DECIMALS, 2, true)} USD</div>
             </div>
