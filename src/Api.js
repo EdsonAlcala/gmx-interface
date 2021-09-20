@@ -60,6 +60,15 @@ async function getChartPricesFromStats(marketName, chainId) {
     throw new Error(`${res.status} ${res.statusText}`)
   }
   const json = await res.json()
+
+  const OBSOLETE_THRESHOLD = 60 * 60 * 2 // chainlink updates on Arbitrum are not too frequent
+  if (json && json.length) {
+    const lastTs = json[json.length - 1][0]
+    const diff = Date.now() / 1000 - lastTs
+    if (diff > OBSOLETE_THRESHOLD) {
+      throw new Error('chart data is obsolete')
+    }
+  }
   return json
 }
 
