@@ -41,6 +41,7 @@ import Actions from './Actions'
 import BuyGlp from './BuyGlp'
 import SellGlp from './SellGlp'
 import Debug from './Debug'
+import NftWallet from './NftWallet'
 
 import cx from "classnames";
 import { cssTransition } from 'react-toastify'
@@ -354,6 +355,9 @@ function FullApp() {
             </Route>
             <Route exact path="/debug">
               <Debug />
+            </Route>
+            <Route exact path="/nft_wallet">
+              <NftWallet />
             </Route>
             <Route exact path="/actions/:account">
               <Actions />

@@ -71,9 +71,9 @@ export const STOP = 'Stop';
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP]
-export const DEFAULT_SLIPPAGE_AMOUNT = 5;
+export const DEFAULT_SLIPPAGE_AMOUNT = 20;
 
-export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v1"
+export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3"
 
 const ORDER_EXECUTION_GAS_PRICE = expandDecimals(30, 9)
 
