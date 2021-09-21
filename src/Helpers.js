@@ -486,8 +486,10 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
 
   let usdgAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION)
   usdgAmount = adjustForDecimals(usdgAmount, toToken.decimals, USDG_DECIMALS)
-  const feeBasisPoints0 = getFeeBasisPoints(fromToken, usdgAmount, SWAP_FEE_BASIS_POINTS, TAX_BASIS_POINTS, true, usdgSupply, totalTokenWeights)
-  const feeBasisPoints1 = getFeeBasisPoints(toToken, usdgAmount, SWAP_FEE_BASIS_POINTS, TAX_BASIS_POINTS, false, usdgSupply, totalTokenWeights)
+  const swapFeeBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS
+  const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : SWAP_FEE_BASIS_POINTS
+  const feeBasisPoints0 = getFeeBasisPoints(fromToken, usdgAmount, swapFeeBasisPoints, taxBasisPoints, true, usdgSupply, totalTokenWeights)
+  const feeBasisPoints1 = getFeeBasisPoints(toToken, usdgAmount, swapFeeBasisPoints, taxBasisPoints, false, usdgSupply, totalTokenWeights)
   const feeBasisPoints = feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
 
   return { amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints)), feeBasisPoints }
@@ -608,12 +610,11 @@ export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAd
 
   let usdgAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION)
   usdgAmount = adjustForDecimals(usdgAmount, fromToken.decimals, USDG_DECIMALS)
-  const feeBasisPoints0 = getFeeBasisPoints(fromToken, usdgAmount, SWAP_FEE_BASIS_POINTS, TAX_BASIS_POINTS, true, usdgSupply, totalTokenWeights)
-  const feeBasisPoints1 = getFeeBasisPoints(toToken, usdgAmount, SWAP_FEE_BASIS_POINTS, TAX_BASIS_POINTS, false, usdgSupply, totalTokenWeights)
+  const swapFeeBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS
+  const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : SWAP_FEE_BASIS_POINTS
+  const feeBasisPoints0 = getFeeBasisPoints(fromToken, usdgAmount, swapFeeBasisPoints, taxBasisPoints, true, usdgSupply, totalTokenWeights)
+  const feeBasisPoints1 = getFeeBasisPoints(toToken, usdgAmount, swapFeeBasisPoints, taxBasisPoints, false, usdgSupply, totalTokenWeights)
   const feeBasisPoints = feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
-  if (usdgSupply && totalTokenWeights) {
-    // ??
-  }
 
   return {
     amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
