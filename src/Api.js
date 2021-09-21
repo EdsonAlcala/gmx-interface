@@ -18,14 +18,19 @@ import {
 
 const { AddressZero } = ethers.constants
 
+// Ethereum network, Chainlink Aggregator contracts
 const BTC_USD_FEED_ID = "0xae74faa92cb67a95ebcab07358bc222e33a34da7";
 const BNB_USD_FEED_ID = "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d";
 const ETH_USD_FEED_ID = "0x37bc7498f4ff12c19678ee8fe19d713b87f6a9e6";
+const LINK_USD_FEED_ID = "0xdfd03bfc3465107ce570a0397b247f546a42d0fa";
+const UNI_USD_FEED_ID = "0x68577f915131087199fe48913d8b416b3984fd38";
 
 const FEED_ID_MAP = {
   "BTC_USD": BTC_USD_FEED_ID,
   "ETH_USD": ETH_USD_FEED_ID,
-  "BNB_USD": BNB_USD_FEED_ID
+  "BNB_USD": BNB_USD_FEED_ID,
+  "LINK_USD": LINK_USD_FEED_ID,
+  "UNI_USD": UNI_USD_FEED_ID
 };
 
 const CHAINLINK_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/deividask/chainlink";
@@ -55,6 +60,15 @@ async function getChartPricesFromStats(marketName, chainId) {
     throw new Error(`${res.status} ${res.statusText}`)
   }
   const json = await res.json()
+
+  const OBSOLETE_THRESHOLD = 60 * 60 * 2 // chainlink updates on Arbitrum are not too frequent
+  if (json && json.length) {
+    const lastTs = json[json.length - 1][0]
+    const diff = Date.now() / 1000 - lastTs
+    if (diff > OBSOLETE_THRESHOLD) {
+      throw new Error('chart data is obsolete')
+    }
+  }
   return json
 }
 
@@ -126,7 +140,7 @@ export function useTrades(chainId, account) {
 }
 
 export function useChartPrices(marketName, chainId) {
-  const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName], {
+  const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName, chainId], {
     fetcher: async () => {
       try {
         return await getChartPricesFromStats(marketName, chainId)
@@ -142,6 +156,7 @@ export function useChartPrices(marketName, chainId) {
         }
       }
     },
+    dedupingInterval: 60000,
     focusThrottleInterval: 60000 * 10
   })
   return [prices, updatePrices];
