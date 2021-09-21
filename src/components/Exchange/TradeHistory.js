@@ -162,7 +162,7 @@ export default function TradeHistory(props) {
           <div>
             <div className="muted TradeHistory-time">
               {formatDateTime(tradeData.timestamp)}
-              {(!account || account.length === 0) && <span> (<Link to={`actions/${tradeData.account}`}>{tradeData.account}</Link>)</span>}
+              {(!account || account.length === 0) && <span> (<Link to={`/actions/${tradeData.account}`}>{tradeData.account}</Link>)</span>}
             </div>
             <a className="plain" href={txUrl} target="_blank" rel="noopener noreferrer">{msg}</a>
           </div>
