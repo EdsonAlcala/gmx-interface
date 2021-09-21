@@ -231,6 +231,11 @@ export default function DashboardV2() {
     gmxMarketCap = gmxPrice.mul(totalSupplies[1]).div(expandDecimals(1, GMX_DECIMALS))
   }
 
+  let stakedGmxSupplyUsd
+  if (gmxPrice && stakedGmxSupply) {
+    stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS))
+  }
+
   let aum
   if (aums && aums.length > 0) {
     aum = aums[0].add(aums[1]).div(2)
@@ -426,6 +431,12 @@ export default function DashboardV2() {
                 </div>
               </div>
               <div className="App-card-row">
+                <div className="label">Total Staked</div>
+                <div>
+                  ${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}
+                </div>
+              </div>
+              <div className="App-card-row">
                 <div className="label">Market Cap</div>
                 <div>
                   ${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}
@@ -447,6 +458,12 @@ export default function DashboardV2() {
                 <div className="label">Supply</div>
                 <div>
                   {formatArrayAmount(totalSupplies, 3, GMX_DECIMALS, 0, true)} GLP
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Total Staked</div>
+                <div>
+                  ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
                 </div>
               </div>
               <div className="App-card-row">
