@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { Pool } from '@uniswap/v3-sdk'
@@ -30,6 +31,7 @@ import {
 
 import { getContract } from './Addresses'
 
+import VaultV2 from './abis/VaultV2.json'
 import ReaderV2 from './abis/ReaderV2.json'
 import GlpManager from './abis/GlpManager.json'
 import UniPool from './abis/UniPool.json'
@@ -144,8 +146,9 @@ export default function DashboardV2() {
 
   const gmxAddress = getContract(chainId, "GMX")
   const glpAddress = getContract(chainId, "GLP")
+  const usdgAddress = getContract(chainId, "USDG")
 
-  const tokensForSupplyQuery = [gmxAddress, glpAddress]
+  const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress]
 
   const { data: aums, mutate: updateAums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: fetcher(library, GlpManager),
@@ -161,6 +164,10 @@ export default function DashboardV2() {
 
   const { data: totalSupplies, mutate: updateTotalSupplies } = useSWR([`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", AddressZero], {
     fetcher: fetcher(library, ReaderV2, [tokensForSupplyQuery]),
+  })
+
+  const { data: totalTokenWeights, mutate: updateTotalTokenWeights } = useSWR([`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"], {
+    fetcher: fetcher(library, VaultV2),
   })
 
   const poolAddress = "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E" // GMX/WETH
@@ -247,6 +254,45 @@ export default function DashboardV2() {
   const minuteValue = parseInt((new Date() - new Date().setUTCHours(0,0,0,0)) / (60 * 1000))
   let volumeLabel = hourValue > 0 ? `${hourValue}h` : `${minuteValue}m`
 
+  let usdgSupply
+  if (totalSupplies && totalSupplies[5]) {
+    usdgSupply = totalSupplies[5]
+  }
+
+  const getWeightText = (tokenInfo) => {
+    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !usdgSupply || !totalTokenWeights) {
+      return "..."
+    }
+
+    const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(usdgSupply)
+    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights)
+
+    const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(targetWeightBps, 2, 2, false)}%`
+
+    return (
+      <Tooltip handle={weightText} position="right-bottom">
+        Current Weight: {formatAmount(currentWeightBps, 2, 2, false)}%<br/>
+        Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br/>
+        <br/>
+        {currentWeightBps.lt(targetWeightBps) && <div>
+          {tokenInfo.symbol} is below its target weight.<br/>
+          <br/>
+          Get lower fees to <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">buy GLP</Link> with {tokenInfo.symbol},&nbsp;
+          and to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> {tokenInfo.symbol} for other tokens.
+        </div>}
+        {currentWeightBps.gt(targetWeightBps) && <div>
+          {tokenInfo.symbol} is above its target weight.<br/>
+          <br/>
+          Get lower fees to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> tokens for {tokenInfo.symbol}.
+        </div>}
+        <br/>
+        <div>
+          <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">More Info</a>
+        </div>
+      </Tooltip>
+    )
+  }
+
   useEffect(() => {
     if (active) {
       library.on('block', () => {
@@ -261,6 +307,8 @@ export default function DashboardV2() {
         updateFees(undefined, true)
         updateUniPoolSlot0(undefined, true)
         updateStakedGmxSupply(undefined, true)
+
+        updateTotalTokenWeights(undefined, true)
       })
       return () => {
         library.removeAllListeners('block')
@@ -269,7 +317,8 @@ export default function DashboardV2() {
   }, [active, library,  chainId,
       updatePositionStats, updateDailyVolume, updateTotalVolume,
       updateTotalSupplies, updateAums, updateVaultTokenInfo,
-      updateFees, updateUniPoolSlot0, updateStakedGmxSupply])
+      updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
+      updateTotalTokenWeights])
 
   return (
     <div className="DashboardV2 Page">
@@ -436,6 +485,12 @@ export default function DashboardV2() {
                     <div className="label">Utilization</div>
                     <div>
                       {formatAmount(utilization, 2, 2, false)}%
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Weight</div>
+                    <div>
+                      {getWeightText(tokenInfo)}
                     </div>
                   </div>
                 </div>
