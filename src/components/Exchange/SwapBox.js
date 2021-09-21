@@ -1531,6 +1531,19 @@ export default function SwapBox(props) {
           </div>
         </div>
       }
+      <div className="Exchange-swap-market-box App-box App-box-border">
+        <div className="Exchange-swap-market-box-title">
+          Trading Guide
+        </div>
+        <div className="App-card-divider"></div>
+        <div className="Exchange-info-row">
+          <div className="Exchange-info-label-button">
+            <a href="https://gmxio.gitbook.io/gmx/trading" target="_blank" rel="noopener noreferrer">
+              How to Trade
+            </a>
+          </div>
+        </div>
+      </div>
       {isConfirming &&
         <ConfirmationBox
           orders={orders}
